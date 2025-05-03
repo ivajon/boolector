@@ -35,7 +35,7 @@ if is_macos; then
    popd
 else
   echo "BUILDING ON LINUX!"
-  git apply "$(pwd)/../../contrib/btor2tools_patch"
+  patch -p1 <$(pwd)/../../contrib/btor2tools_patch
   # CFLAGS="-fPIC" ./configure.sh --static
   mkdir build
   pushd build
