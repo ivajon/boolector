@@ -21,7 +21,7 @@ testing=unknown
 lingeling=unknown
 minisat=unknown
 picosat=unknown
-cadical=unknown
+cadical=yes
 cms=unknown
 
 gcov=no

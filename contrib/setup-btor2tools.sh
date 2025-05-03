@@ -12,6 +12,8 @@ set -e -o pipefail
 
 source "$(dirname "$0")/setup-utils.sh"
 
+name="$(dirname "$0")"
+
 BTOR2TOOLS_DIR=${DEPS_DIR}/btor2tools
 COMMIT_ID="037f1fa88fb439dca6f648ad48a3463256d69d8b"
 
@@ -24,15 +26,20 @@ if is_windows; then
   test_apply_patch "${component}" "${last_patch_date}"
 fi
 
+
 if is_macos; then
    mkdir build
    pushd build
-   cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'
+   cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_OSX_ARCHITECTURES='x86_64;arm64' -DCMAKE_POLICY_VERSION_MINIMUM=3.5 
    make -j${NPROC}
    popd
 else
-  CFLAGS="-fPIC" ./configure.sh --static
+  echo "BUILDING ON LINUX!"
+  git apply "$(pwd)/../../contrib/btor2tools_patch"
+  # CFLAGS="-fPIC" ./configure.sh --static
+  mkdir build
   pushd build
+  CFLAGS="-fPIC" cmake .. -DBUILD_SHARED_LIBS=OFF -DCMAKE_OSX_ARCHITECTURES='x86_64;arm64' -DCMAKE_POLICY_VERSION_MINIMUM=4.0
   make -j${NPROC}
   popd
 fi
